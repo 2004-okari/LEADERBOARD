@@ -2,7 +2,7 @@ import './styles.css';
 
 const url = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/';
 const gameName = { name: 'Okari Game' };
-let gameId = '0ToP2vQsz2wd4sNV2QT';
+let gameId = 'AkSDZZAGMMaVZfipeCTI';
 
 const createGame = async () => {
   try {
@@ -13,8 +13,8 @@ const createGame = async () => {
       },
       body: JSON.stringify(gameName),
     });
-    const data = await response.json();
-    gameId = data.result.split(' ')[3];
+    const { result } = await response.json();
+    [, , , gameId] = result.split(' ');
   } catch (e) {
     console.error('Error creating game', e);
   }
@@ -24,14 +24,13 @@ document.querySelector('.head-1').innerHTML = gameId;
 
 const submitScore = async (user, score) => {
   try {
-    const response = await fetch(`${url}games/${gameId}/scores/`, {
+    await fetch(`${url}games/${gameId}/scores/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ user, score }),
     });
-    const data = await response.json();
   } catch (error) {
     console.error('Error submitting score:', error);
   }
@@ -65,8 +64,15 @@ const submitScoreData = () => {
     const name = nameInput.value;
     const score = scoreInput.value;
     submitScore(name, score);
-  } 
+  }
+  nameInput.value = '';
+  scoreInput.value = '';
 };
+
+const refreshButton = document.querySelector('.refresh-btn');
+refreshButton.addEventListener('click', displayLeaderboard);
 
 const submitButton = document.querySelector('.submit-btn');
 submitButton.addEventListener('click', submitScoreData);
+
+export { createGame, displayLeaderboard };
