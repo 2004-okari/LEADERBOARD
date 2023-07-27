@@ -20,8 +20,6 @@ const createGame = async () => {
   }
 };
 
-document.querySelector('.head-1').innerHTML = gameId;
-
 const submitScore = async (user, score) => {
   try {
     await fetch(`${url}games/${gameId}/scores/`, {
